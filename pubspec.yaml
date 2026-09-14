@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  # home_widget will be added with the Android (#2) and iOS (#3) widget shells.
+  home_widget: ^0.9.4
 
 dev_dependencies:
   flutter_test:

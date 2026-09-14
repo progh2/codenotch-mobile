@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="codenotch_usage_widget_name">Codenotch</string>
+    <string name="codenotch_usage_widget_description">Placeholder AI usage. Live data comes later.</string>
+    <string name="codenotch_usage_widget_placeholder_title">Codenotch</string>
+    <string name="codenotch_usage_widget_placeholder_usage">--%</string>
+</resources>

@@ -39,27 +39,77 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Companion to Codenotch for Windows. This app will host home-screen '
-            'usage widgets (Android App Widget + iOS WidgetKit). Live usage sync '
-            'is not included yet.',
+            'Companion to Codenotch for Windows. Home-screen widgets are '
+            'placeholder shells (Android App Widget + iOS WidgetKit). Live '
+            'usage sync is not included yet.',
             style: textTheme.bodyLarge,
           ),
           const SizedBox(height: 28),
-          Text('Upcoming widgets', style: textTheme.titleMedium),
+          Text('Home-screen widgets', style: textTheme.titleMedium),
+          const SizedBox(height: 12),
+          const HomeWidgetPreviewCard(),
           const SizedBox(height: 12),
           const _PlaceholderCard(
             icon: Icons.android,
             title: 'Android App Widget',
             subtitle:
-                'Empty shell lands in issue #2 (${HomeWidgetIds.android}).',
+                'Add Codenotch from the home-screen widget picker. Shows '
+                '${HomeWidgetPlaceholder.title} / ${HomeWidgetPlaceholder.usage}.',
           ),
           const SizedBox(height: 12),
           const _PlaceholderCard(
             icon: Icons.phone_iphone,
             title: 'iOS WidgetKit',
-            subtitle: 'Empty shell lands in issue #3 (${HomeWidgetIds.ios}).',
+            subtitle:
+                'Add Codenotch after a Mac / simulator build. Kind: '
+                '${HomeWidgetIds.ios}.',
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// In-app preview that matches the native dark placeholder widget.
+class HomeWidgetPreviewCard extends StatelessWidget {
+  const HomeWidgetPreviewCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label:
+          'Home widget preview ${HomeWidgetPlaceholder.title} '
+          '${HomeWidgetPlaceholder.usage}',
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1A1C),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.fromLTRB(20, 18, 20, 18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                HomeWidgetPlaceholder.title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                HomeWidgetPlaceholder.usage,
+                style: TextStyle(
+                  color: Color(0xFFE8C07A),
+                  fontSize: 28,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
