@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_background">#0B0F14</color>
+    <color name="widget_ring_track">#1C2430</color>
+    <color name="widget_ring_fill">#5EEAD4</color>
+    <color name="widget_percent">#F3F6FA</color>
+    <color name="widget_label">#8B96A8</color>
+</resources>

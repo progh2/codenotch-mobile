@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- Track: 270° horseshoe from 135° (bottom-left). -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M 23.13,76.87 A 38,38 0 1 1 76.87,76.87"
+        android:strokeWidth="6"
+        android:strokeColor="#1C2430"
+        android:strokeLineCap="round" />
+    <!-- Fill: ~72% of the 270° sweep, slightly thicker. -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M 23.13,76.87 A 38,38 0 1 1 82.76,30.73"
+        android:strokeWidth="6.9"
+        android:strokeColor="#5EEAD4"
+        android:strokeLineCap="round" />
+</vector>

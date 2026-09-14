@@ -1,12 +1,34 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants.dart';
+import '../../core/home_widget_sync.dart';
+import '../../core/mock_usage.dart';
+import '../../core/widget_colors.dart';
 import '../settings/settings_screen.dart';
+import 'usage_ring.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   static const routeName = '/';
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _mockIndex = 0;
+
+  MockUsageSnapshot get _snapshot => MockUsageCatalog.at(_mockIndex);
+
+  Future<void> _refreshMock() async {
+    final next = MockUsageCatalog.nextIndex(_mockIndex);
+    setState(() => _mockIndex = next);
+    await syncMockHomeWidget(
+      snapshot: MockUsageCatalog.at(next),
+      index: next,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,30 +61,37 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Companion to Codenotch for Windows. Home-screen widgets are '
-            'placeholder shells (Android App Widget + iOS WidgetKit). Live '
-            'usage sync is not included yet.',
+            'Companion to Codenotch for Windows. Home-screen widgets show a '
+            'mock mint ring and percent (Android App Widget + iOS WidgetKit). '
+            'Live usage APIs are not included yet.',
             style: textTheme.bodyLarge,
           ),
           const SizedBox(height: 28),
           Text('Home-screen widgets', style: textTheme.titleMedium),
           const SizedBox(height: 12),
-          const HomeWidgetPreviewCard(),
+          HomeWidgetPreviewCard(snapshot: _snapshot),
           const SizedBox(height: 12),
-          const _PlaceholderCard(
+          FilledButton.icon(
+            onPressed: _refreshMock,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Refresh mock'),
+          ),
+          const SizedBox(height: 16),
+          const _InfoCard(
             icon: Icons.android,
             title: 'Android App Widget',
             subtitle:
-                'Add Codenotch from the home-screen widget picker. Shows '
-                '${HomeWidgetPlaceholder.title} / ${HomeWidgetPlaceholder.usage}.',
+                'Add Codenotch from the home-screen widget picker. Tap the '
+                'widget to cycle mock values. Ring + percent + label.',
           ),
           const SizedBox(height: 12),
-          const _PlaceholderCard(
+          const _InfoCard(
             icon: Icons.phone_iphone,
             title: 'iOS WidgetKit',
             subtitle:
                 'Add Codenotch after a Mac / simulator build. Kind: '
-                '${HomeWidgetIds.ios}.',
+                '${HomeWidgetIds.ios}. Refresh from this screen to rewrite '
+                'the mock payload.',
           ),
         ],
       ),
@@ -70,43 +99,27 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// In-app preview that matches the native dark placeholder widget.
+/// In-app preview that matches the native dark ring widget.
 class HomeWidgetPreviewCard extends StatelessWidget {
-  const HomeWidgetPreviewCard({super.key});
+  const HomeWidgetPreviewCard({super.key, required this.snapshot});
+
+  final MockUsageSnapshot snapshot;
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
       label:
-          'Home widget preview ${HomeWidgetPlaceholder.title} '
-          '${HomeWidgetPlaceholder.usage}',
+          'Home widget preview ${snapshot.percentText} ${snapshot.label}',
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1C),
-          borderRadius: BorderRadius.circular(16),
+          color: WidgetColors.background,
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: const Padding(
-          padding: EdgeInsets.fromLTRB(20, 18, 20, 18),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 22, 20, 22),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                HomeWidgetPlaceholder.title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                HomeWidgetPlaceholder.usage,
-                style: TextStyle(
-                  color: Color(0xFFE8C07A),
-                  fontSize: 28,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              UsageRing(snapshot: snapshot),
             ],
           ),
         ),
@@ -115,8 +128,8 @@ class HomeWidgetPreviewCard extends StatelessWidget {
   }
 }
 
-class _PlaceholderCard extends StatelessWidget {
-  const _PlaceholderCard({
+class _InfoCard extends StatelessWidget {
+  const _InfoCard({
     required this.icon,
     required this.title,
     required this.subtitle,
