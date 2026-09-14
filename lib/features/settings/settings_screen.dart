@@ -22,7 +22,8 @@ class SettingsScreen extends StatelessWidget {
             leading: Icon(Icons.widgets_outlined),
             title: Text('Home widgets'),
             subtitle: Text(
-              'Android and iOS widget shells are tracked as issues #2 and #3.',
+              'Placeholder shells are available. Add Codenotch from the '
+              'Android or iOS home-screen widget picker. Live rings come later.',
             ),
           ),
           ListTile(
