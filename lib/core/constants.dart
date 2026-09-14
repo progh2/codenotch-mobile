@@ -1,4 +1,4 @@
-/// App-level copy and identifiers. Live usage sync is out of scope for M0.
+/// App-level copy and identifiers. Live usage sync is out of scope for M1.
 abstract final class AppInfo {
   static const name = 'Codenotch Mobile';
   static const tagline = 'Home-screen companion for AI usage';
@@ -16,10 +16,15 @@ abstract final class HomeWidgetIds {
   static const appGroup = 'group.com.progh2.codenotchMobile';
   static const titleKey = 'title';
   static const usageKey = 'usage';
+  static const labelKey = 'label';
+  static const percentKey = 'percent';
+  static const mockIndexKey = 'mock_index';
 }
 
-/// Mock values written to both native widgets. Live usage lands in M1 (#4).
+/// Default mock payload written on launch. Refresh cycles [MockUsageCatalog].
 abstract final class HomeWidgetPlaceholder {
   static const title = 'Codenotch';
-  static const usage = '--%';
+  static const usage = '72%';
+  static const label = 'Mock usage';
+  static const percent = 72;
 }

@@ -16,14 +16,15 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.info_outline),
             title: Text(AppInfo.name),
-            subtitle: Text('Scaffold only — version 0.0.1+1'),
+            subtitle: Text('Mock ring UI — version 0.0.1+1'),
           ),
           ListTile(
             leading: Icon(Icons.widgets_outlined),
             title: Text('Home widgets'),
             subtitle: Text(
-              'Placeholder shells are available. Add Codenotch from the '
-              'Android or iOS home-screen widget picker. Live rings come later.',
+              'Android and iOS widgets show a mock mint ring, percent, and '
+              'short label. Refresh in the app (or tap the Android widget) '
+              'to cycle mock values.',
             ),
           ),
           ListTile(
