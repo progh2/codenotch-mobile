@@ -4,18 +4,19 @@
     android:height="160dp"
     android:viewportWidth="100"
     android:viewportHeight="100">
-    <!-- Track: 270° horseshoe from 135° (bottom-left). -->
+    <!-- 12% inset, 6dp stroke ≈ 3.75 viewport units on a 160dp tile. -->
     <path
         android:fillColor="#00000000"
         android:pathData="M 23.13,76.87 A 38,38 0 1 1 76.87,76.87"
-        android:strokeWidth="6"
+        android:strokeWidth="3.75"
         android:strokeColor="#1C2430"
         android:strokeLineCap="round" />
-    <!-- Fill: ~72% of the 270° sweep, slightly thicker. -->
+    <!-- Fill: ~72% of the 270° sweep, same thickness as the track. -->
     <path
         android:fillColor="#00000000"
         android:pathData="M 23.13,76.87 A 38,38 0 1 1 82.76,30.73"
-        android:strokeWidth="6.9"
+        android:strokeWidth="3.75"
         android:strokeColor="#5EEAD4"
         android:strokeLineCap="round" />
+    <!-- Upper 120° highlight is drawn live; picker preview uses locked fill only. -->
 </vector>

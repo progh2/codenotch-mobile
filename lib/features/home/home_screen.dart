@@ -120,9 +120,7 @@ class HomeWidgetPreviewCard extends StatelessWidget {
                 color: WidgetColors.background,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Center(
-                child: UsageRing(snapshot: snapshot, size: 176),
-              ),
+              child: UsageRing(snapshot: snapshot),
             ),
           ),
         ),

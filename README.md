@@ -32,9 +32,19 @@ Locked palette (do not invent other widget colors):
 |---|---|
 | Background | `#0B0F14` |
 | Ring track | `#1C2430` |
-| Ring fill | `#5EEAD4` (mint; fill stroke slightly thicker) |
+| Ring fill | `#5EEAD4` (mint) |
 | Percent | `#F3F6FA` bold, large, centered |
 | Label | `#8B96A8` one short line |
+
+Se-a metrics (locked hex unchanged):
+
+| Token | Value |
+|---|---|
+| Track / fill stroke | 6 / 6 |
+| Upper fill highlight | 120° band, slightly brighter (lerp fill → percent) |
+| Percent size | ≈ 28% of widget height |
+| Label size | ≈ 40% of the percent size |
+| Inner padding | ≈ 12% of the shorter side |
 
 Layout: thin 270° horseshoe arc (starts at 135°, gap at the bottom so the **upper curve** is the longest stretch), big `%` in the center, short label under it.
 

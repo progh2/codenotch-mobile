@@ -13,6 +13,23 @@ private let ringFill = Color(red: 94 / 255, green: 234 / 255, blue: 212 / 255)
 private let percentColor = Color(red: 243 / 255, green: 246 / 255, blue: 250 / 255)
 private let labelColor = Color(red: 139 / 255, green: 150 / 255, blue: 168 / 255)
 
+/// Upper-120° highlight: lerp of locked fill → percent (no new hex).
+private let highlightMix = 0.25
+private let ringFillHighlight = Color(
+    red: (94 + (243 - 94) * highlightMix) / 255,
+    green: (234 + (246 - 234) * highlightMix) / 255,
+    blue: (212 + (250 - 212) * highlightMix) / 255
+)
+
+private let startDegrees = 135.0
+private let sweepDegrees = 270.0
+private let highlightStartDegrees = 210.0
+private let highlightSweepDegrees = 120.0
+private let strokeWidth = 6.0
+private let innerPaddingRatio = 0.12
+private let percentHeightRatio = 0.28
+private let labelToPercentRatio = 0.40
+
 private let defaultPercent = 72
 private let defaultLabel = "Mock usage"
 
@@ -66,25 +83,34 @@ struct CodenotchUsageProvider: TimelineProvider {
     }
 }
 
+func highlightArc(progress: Double) -> (start: Double, sweep: Double)? {
+    let fillEnd = startDegrees + sweepDegrees * min(max(progress, 0), 1)
+    let overlapStart = max(startDegrees, highlightStartDegrees)
+    let overlapEnd = min(fillEnd, highlightStartDegrees + highlightSweepDegrees)
+    guard overlapEnd > overlapStart else { return nil }
+    return (overlapStart, overlapEnd - overlapStart)
+}
+
 struct CodenotchUsageWidgetView: View {
     var entry: CodenotchUsageEntry
 
     var body: some View {
         GeometryReader { geo in
-            let side = min(geo.size.width, geo.size.height)
+            let shortSide = min(geo.size.width, geo.size.height)
+            let percentSize = geo.size.height * percentHeightRatio
+            let labelSize = percentSize * labelToPercentRatio
             ZStack {
                 UsageRingView(progress: Double(entry.percent) / 100.0)
-                    .padding(side * 0.06)
-                VStack(spacing: 4) {
+                    .padding(shortSide * innerPaddingRatio)
+                VStack(spacing: geo.size.height * 0.02) {
                     Text(entry.percentText)
-                        .font(.system(size: side * 0.22, weight: .bold, design: .rounded))
+                        .font(.system(size: percentSize, weight: .bold, design: .rounded))
                         .foregroundColor(percentColor)
                     Text(entry.label)
-                        .font(.system(size: max(10, side * 0.075), weight: .medium))
+                        .font(.system(size: labelSize, weight: .medium))
                         .foregroundColor(labelColor)
                         .lineLimit(1)
                 }
-                .offset(y: 3)
             }
             .frame(width: geo.size.width, height: geo.size.height)
         }
@@ -97,27 +123,34 @@ struct UsageRingView: View {
 
     var body: some View {
         ZStack {
-            UsageRingShape(progress: 1)
-                .stroke(ringTrack, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-            UsageRingShape(progress: min(max(progress, 0), 1))
-                .stroke(ringFill, style: StrokeStyle(lineWidth: 6.9, lineCap: .round))
+            UsageRingShape(startDegrees: startDegrees, sweepDegrees: sweepDegrees)
+                .stroke(ringTrack, style: StrokeStyle(lineWidth: strokeWidth, lineCap: .round))
+            UsageRingShape(
+                startDegrees: startDegrees,
+                sweepDegrees: sweepDegrees * min(max(progress, 0), 1)
+            )
+            .stroke(ringFill, style: StrokeStyle(lineWidth: strokeWidth, lineCap: .round))
+            if let band = highlightArc(progress: progress) {
+                UsageRingShape(startDegrees: band.start, sweepDegrees: band.sweep)
+                    .stroke(ringFillHighlight, style: StrokeStyle(lineWidth: strokeWidth, lineCap: .round))
+            }
         }
     }
 }
 
 /// 270° horseshoe starting at 135° so the upper arc is the longest curve.
 struct UsageRingShape: Shape {
-    var progress: Double
+    var startDegrees: Double
+    var sweepDegrees: Double
 
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        let inset = min(rect.width, rect.height) * 0.08
-        let drawRect = rect.insetBy(dx: inset, dy: inset)
-        let start = Angle.degrees(135)
-        let end = Angle.degrees(135 + 270 * progress)
+        guard sweepDegrees > 0 else { return path }
+        let start = Angle.degrees(startDegrees)
+        let end = Angle.degrees(startDegrees + sweepDegrees)
         path.addArc(
-            center: CGPoint(x: drawRect.midX, y: drawRect.midY),
-            radius: min(drawRect.width, drawRect.height) / 2,
+            center: CGPoint(x: rect.midX, y: rect.midY),
+            radius: min(rect.width, rect.height) / 2,
             startAngle: start,
             endAngle: end,
             clockwise: false

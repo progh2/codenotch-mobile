@@ -7,25 +7,24 @@ import '../../core/widget_colors.dart';
 
 /// In-app ring that matches the Android / iOS home-widget geometry.
 class UsageRing extends StatelessWidget {
-  const UsageRing({
-    super.key,
-    required this.snapshot,
-    this.size = 168,
-  });
+  const UsageRing({super.key, required this.snapshot});
 
   final MockUsageSnapshot snapshot;
-  final double size;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CustomPaint(
-        painter: UsageRingPainter(progress: snapshot.progress),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 6),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final height = constraints.maxHeight;
+        final widgetHeight = height.isFinite ? height : width;
+        final percentSize =
+            widgetHeight * UsageRingSpec.percentHeightRatio;
+        final labelSize = percentSize * UsageRingSpec.labelToPercentRatio;
+
+        return CustomPaint(
+          painter: UsageRingPainter(progress: snapshot.progress),
+          child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -33,12 +32,12 @@ class UsageRing extends StatelessWidget {
                   snapshot.percentText,
                   style: TextStyle(
                     color: WidgetColors.percent,
-                    fontSize: size * 0.22,
+                    fontSize: percentSize,
                     fontWeight: FontWeight.w700,
                     height: 1,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: widgetHeight * 0.02),
                 Text(
                   snapshot.label,
                   textAlign: TextAlign.center,
@@ -46,7 +45,7 @@ class UsageRing extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: WidgetColors.label,
-                    fontSize: size * 0.075,
+                    fontSize: labelSize,
                     fontWeight: FontWeight.w500,
                     height: 1.1,
                   ),
@@ -54,8 +53,8 @@ class UsageRing extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -67,8 +66,8 @@ class UsageRingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final stroke = UsageRingSpec.strokeWidth;
-    final pad = stroke * UsageRingSpec.fillStrokeScale / 2 + 3;
+    final shortSide = math.min(size.width, size.height);
+    final pad = shortSide * UsageRingSpec.innerPaddingRatio;
     final rect = Rect.fromLTWH(
       pad,
       pad,
@@ -82,20 +81,37 @@ class UsageRingPainter extends CustomPainter {
     final track = Paint()
       ..color = WidgetColors.ringTrack
       ..style = PaintingStyle.stroke
-      ..strokeWidth = stroke
+      ..strokeWidth = UsageRingSpec.strokeWidth
       ..strokeCap = StrokeCap.round
       ..isAntiAlias = true;
 
     final fill = Paint()
       ..color = WidgetColors.ringFill
       ..style = PaintingStyle.stroke
-      ..strokeWidth = stroke * UsageRingSpec.fillStrokeScale
+      ..strokeWidth = UsageRingSpec.fillStrokeWidth
+      ..strokeCap = StrokeCap.round
+      ..isAntiAlias = true;
+
+    final highlight = Paint()
+      ..color = WidgetColors.ringFillHighlight
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = UsageRingSpec.fillStrokeWidth
       ..strokeCap = StrokeCap.round
       ..isAntiAlias = true;
 
     canvas.drawArc(rect, start, maxSweep, false, track);
     if (clamped > 0) {
       canvas.drawArc(rect, start, maxSweep * clamped, false, fill);
+      final band = UsageRingSpec.highlightArc(clamped);
+      if (band != null) {
+        canvas.drawArc(
+          rect,
+          band.start * math.pi / 180,
+          band.sweep * math.pi / 180,
+          false,
+          highlight,
+        );
+      }
     }
   }
 

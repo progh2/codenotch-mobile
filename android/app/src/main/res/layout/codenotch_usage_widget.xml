@@ -3,8 +3,7 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/widget_background"
-    android:padding="8dp">
+    android:background="@color/widget_background">
 
     <ImageView
         android:id="@+id/widget_ring"
@@ -18,8 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical"
-        android:paddingTop="6dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/widget_usage"
@@ -34,7 +32,7 @@
             android:id="@+id/widget_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/codenotch_usage_widget_placeholder_label"

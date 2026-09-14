@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:codenotch_mobile/core/constants.dart';
@@ -43,7 +44,40 @@ void main() {
     expect(WidgetColors.ringFill.toARGB32(), 0xFF5EEAD4);
     expect(WidgetColors.percent.toARGB32(), 0xFFF3F6FA);
     expect(WidgetColors.label.toARGB32(), 0xFF8B96A8);
+  });
+
+  test('Se-a ring metrics match the locked ratios', () {
     expect(UsageRingSpec.startDegrees, 135);
     expect(UsageRingSpec.sweepDegrees, 270);
+    expect(UsageRingSpec.strokeWidth, 6);
+    expect(UsageRingSpec.fillStrokeWidth, 6);
+    expect(UsageRingSpec.highlightStartDegrees, 210);
+    expect(UsageRingSpec.highlightSweepDegrees, 120);
+    expect(UsageRingSpec.innerPaddingRatio, 0.12);
+    expect(UsageRingSpec.percentHeightRatio, 0.28);
+    expect(UsageRingSpec.labelToPercentRatio, 0.40);
+    expect(
+      WidgetColors.ringFillHighlight.toARGB32(),
+      Color.lerp(
+        WidgetColors.ringFill,
+        WidgetColors.percent,
+        UsageRingSpec.highlightMix,
+      )!.toARGB32(),
+    );
+  });
+
+  test('upper 120° highlight overlaps the fill arc', () {
+    expect(UsageRingSpec.highlightArc(0), isNull);
+    expect(UsageRingSpec.highlightArc(0.2), isNull);
+
+    final mid = UsageRingSpec.highlightArc(0.41);
+    expect(mid, isNotNull);
+    expect(mid!.start, 210);
+    expect(mid.sweep, closeTo(245.7 - 210, 0.05));
+
+    final high = UsageRingSpec.highlightArc(0.88);
+    expect(high, isNotNull);
+    expect(high!.start, 210);
+    expect(high.sweep, 120);
   });
 }
