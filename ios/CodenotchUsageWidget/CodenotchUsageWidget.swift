@@ -31,7 +31,7 @@ private let percentHeightRatio = 0.28
 private let labelToPercentRatio = 0.40
 
 private let defaultPercent = 72
-private let defaultLabel = "Mock usage"
+private let defaultLabel = "Claude"
 
 struct CodenotchUsageEntry: TimelineEntry {
     let date: Date
@@ -192,7 +192,7 @@ struct CodenotchUsageWidget_Previews: PreviewProvider {
                 title: "Codenotch",
                 percent: 72,
                 percentText: "72%",
-                label: "Mock usage"
+                label: "Claude"
             )
         )
         .previewContext(WidgetPreviewContext(family: .systemSmall))

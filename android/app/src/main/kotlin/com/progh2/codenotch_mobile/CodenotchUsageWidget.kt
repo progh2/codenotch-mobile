@@ -112,13 +112,18 @@ class CodenotchUsageWidget : HomeWidgetProvider() {
         const val KEY_LABEL = "label"
         const val KEY_PERCENT = "percent"
         const val KEY_INDEX = "mock_index"
+        const val KEY_PROVIDER_ID = "provider_id"
+        const val KEY_ENABLED = "enabled_providers"
 
         private val MOCKS =
             listOf(
-                MockSnapshot(72, "Mock usage"),
-                MockSnapshot(41, "Sample quota"),
-                MockSnapshot(88, "Demo ring"),
+                MockSnapshot("claude", 72, "Claude"),
+                MockSnapshot("cursor", 41, "Cursor"),
+                MockSnapshot("codex", 88, "Codex"),
+                MockSnapshot("antigravity", 55, "Antigravity"),
             )
+
+        private val EMPTY = MockSnapshot("", 0, "No providers", empty = true)
 
         private const val COLOR_TRACK = 0xFF1C2430.toInt()
         private const val COLOR_FILL = 0xFF5EEAD4.toInt()
@@ -144,14 +149,39 @@ class CodenotchUsageWidget : HomeWidgetProvider() {
                     else -> MOCKS.first().percent
                 }
             return MockSnapshot(
+                id = prefs.getString(KEY_PROVIDER_ID, null) ?: MOCKS.first().id,
                 percent = percent,
                 label = if (label.isNullOrBlank()) MOCKS.first().label else label,
+                empty = usage == "--" || label == EMPTY.label,
             )
         }
 
+        internal fun readEnabledIds(prefs: SharedPreferences): Set<String> {
+            if (!prefs.contains(KEY_ENABLED)) {
+                return MOCKS.map { it.id }.toSet()
+            }
+            val raw = prefs.getString(KEY_ENABLED, "") ?: ""
+            if (raw.isBlank()) {
+                return emptySet()
+            }
+            return raw.split(',').map { it.trim() }.filter { it.isNotEmpty() }.toSet()
+        }
+
+        internal fun enabledMocks(prefs: SharedPreferences): List<MockSnapshot> {
+            val enabled = readEnabledIds(prefs)
+            return MOCKS.filter { it.id in enabled }
+        }
+
         internal fun cycleMock(prefs: SharedPreferences) {
-            val next = (prefs.getInt(KEY_INDEX, 0) + 1) % MOCKS.size
-            writeSnapshot(prefs, MOCKS[next], next)
+            val pool = enabledMocks(prefs)
+            if (pool.isEmpty()) {
+                writeSnapshot(prefs, EMPTY, 0)
+                return
+            }
+            val currentId = prefs.getString(KEY_PROVIDER_ID, null)
+            val currentIdx = pool.indexOfFirst { it.id == currentId }.let { if (it < 0) 0 else it }
+            val next = (currentIdx + 1) % pool.size
+            writeSnapshot(prefs, pool[next], next)
         }
 
         internal fun writeSnapshot(
@@ -164,6 +194,7 @@ class CodenotchUsageWidget : HomeWidgetProvider() {
                 .putString(KEY_LABEL, snapshot.label)
                 .putInt(KEY_PERCENT, snapshot.percent)
                 .putInt(KEY_INDEX, index)
+                .putString(KEY_PROVIDER_ID, snapshot.id)
                 .apply()
         }
 
@@ -226,8 +257,10 @@ class CodenotchUsageWidget : HomeWidgetProvider() {
 }
 
 internal data class MockSnapshot(
+    val id: String,
     val percent: Int,
     val label: String,
+    val empty: Boolean = false,
 ) {
-    val percentText: String get() = "$percent%"
+    val percentText: String get() = if (empty) "--" else "$percent%"
 }
