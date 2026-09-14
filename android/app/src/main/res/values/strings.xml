@@ -4,5 +4,5 @@
     <string name="codenotch_usage_widget_description">Mock AI usage ring. Live data comes later.</string>
     <string name="codenotch_usage_widget_placeholder_title">Codenotch</string>
     <string name="codenotch_usage_widget_placeholder_usage">72%</string>
-    <string name="codenotch_usage_widget_placeholder_label">Mock usage</string>
+    <string name="codenotch_usage_widget_placeholder_label">Claude</string>
 </resources>

@@ -19,12 +19,14 @@ abstract final class HomeWidgetIds {
   static const labelKey = 'label';
   static const percentKey = 'percent';
   static const mockIndexKey = 'mock_index';
+  static const providerIdKey = 'provider_id';
+  static const enabledProvidersKey = 'enabled_providers';
 }
 
-/// Default mock payload written on launch. Refresh cycles [MockUsageCatalog].
+/// Default mock payload written on launch. Refresh cycles enabled providers.
 abstract final class HomeWidgetPlaceholder {
   static const title = 'Codenotch';
   static const usage = '72%';
-  static const label = 'Mock usage';
+  static const label = 'Claude';
   static const percent = 72;
 }
