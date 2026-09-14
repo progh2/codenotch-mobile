@@ -14,8 +14,7 @@ abstract class ProviderSettingsStore {
 
 /// [SharedPreferences] backing store. Missing keys mean "all enabled".
 class SharedPreferencesProviderSettingsStore implements ProviderSettingsStore {
-  SharedPreferencesProviderSettingsStore({SharedPreferences? prefs})
-      : _prefs = prefs;
+  SharedPreferencesProviderSettingsStore({this._prefs});
 
   static const enabledKey = 'enabled_providers';
 
@@ -33,8 +32,7 @@ class SharedPreferencesProviderSettingsStore implements ProviderSettingsStore {
       return null;
     }
     return {
-      for (final id in ids)
-        if (UsageProvider.fromId(id) case final provider?) provider,
+      for (final id in ids) ?UsageProvider.fromId(id),
     };
   }
 
@@ -76,9 +74,9 @@ class ProviderSettingsController extends ChangeNotifier {
 
   final ProviderSettingsStore store;
   final Future<void> Function({
-    MockUsageSnapshot snapshot,
-    int index,
-    Set<UsageProvider> enabled,
+    required MockUsageSnapshot snapshot,
+    required int index,
+    required Set<UsageProvider> enabled,
   }) syncWidget;
 
   Set<UsageProvider> _enabled;

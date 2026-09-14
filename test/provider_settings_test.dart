@@ -10,7 +10,11 @@ void main() {
 
   test('defaults to every provider enabled', () {
     final settings = ProviderSettingsController(
-      syncWidget: ({snapshot, index, enabled}) async {},
+      syncWidget: ({
+        required snapshot,
+        required index,
+        required enabled,
+      }) async {},
     );
     expect(settings.enabled, UsageProvider.all.toSet());
     expect(settings.currentSnapshot.label, 'Claude');
@@ -44,7 +48,11 @@ void main() {
     });
     final settings = ProviderSettingsController(
       store: SharedPreferencesProviderSettingsStore(),
-      syncWidget: ({snapshot, index, enabled}) async {},
+      syncWidget: ({
+        required snapshot,
+        required index,
+        required enabled,
+      }) async {},
     );
     await settings.load();
 
@@ -61,7 +69,11 @@ void main() {
   test('disabling current provider jumps to the next enabled snapshot', () async {
     final synced = <MockUsageSnapshot>[];
     final settings = ProviderSettingsController(
-      syncWidget: ({snapshot, index, enabled}) async {
+      syncWidget: ({
+        required snapshot,
+        required index,
+        required enabled,
+      }) async {
         synced.add(snapshot);
       },
     );

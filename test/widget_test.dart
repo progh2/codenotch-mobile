@@ -8,6 +8,15 @@ import 'package:codenotch_mobile/core/usage_providers.dart';
 import 'package:codenotch_mobile/features/home/home_screen.dart';
 import 'package:codenotch_mobile/features/home/usage_ring.dart';
 
+Future<void> tapRefreshMock(WidgetTester tester) async {
+  final button = find.widgetWithText(FilledButton, 'Refresh mock');
+  await tester.scrollUntilVisible(button, 300);
+  await tester.drag(find.byType(ListView).first, const Offset(0, -80));
+  await tester.pumpAndSettle();
+  await tester.tap(button);
+  await tester.pump();
+}
+
 void main() {
   testWidgets('home screen identifies Codenotch Mobile', (tester) async {
     await tester.pumpWidget(const CodenotchApp());
@@ -41,27 +50,23 @@ void main() {
     expect(find.text('72%'), findsOneWidget);
     expect(find.text('Claude'), findsOneWidget);
 
-    await tester.tap(find.text('Refresh mock'));
-    await tester.pump();
+    await tapRefreshMock(tester);
 
     expect(find.text('41%'), findsOneWidget);
     expect(find.text('Cursor'), findsOneWidget);
     expect(find.text('72%'), findsNothing);
 
-    await tester.tap(find.text('Refresh mock'));
-    await tester.pump();
+    await tapRefreshMock(tester);
 
     expect(find.text('88%'), findsOneWidget);
     expect(find.text('Codex'), findsOneWidget);
 
-    await tester.tap(find.text('Refresh mock'));
-    await tester.pump();
+    await tapRefreshMock(tester);
 
     expect(find.text('55%'), findsOneWidget);
     expect(find.text('Antigravity'), findsOneWidget);
 
-    await tester.tap(find.text('Refresh mock'));
-    await tester.pump();
+    await tapRefreshMock(tester);
 
     expect(find.text('72%'), findsOneWidget);
     expect(find.text('Claude'), findsOneWidget);
@@ -93,7 +98,11 @@ void main() {
     tester,
   ) async {
     final settings = ProviderSettingsController(
-      syncWidget: ({snapshot, index, enabled}) async {},
+      syncWidget: ({
+        required snapshot,
+        required index,
+        required enabled,
+      }) async {},
     );
     await tester.pumpWidget(CodenotchApp(settings: settings));
 
@@ -118,17 +127,14 @@ void main() {
     expect(find.text('41%'), findsOneWidget);
     expect(find.text('Showing Cursor · Codex · Antigravity'), findsOneWidget);
 
-    await tester.tap(find.text('Refresh mock'));
-    await tester.pump();
+    await tapRefreshMock(tester);
     expect(find.text('Codex'), findsOneWidget);
     expect(find.text('88%'), findsOneWidget);
 
-    await tester.tap(find.text('Refresh mock'));
-    await tester.pump();
+    await tapRefreshMock(tester);
     expect(find.text('Antigravity'), findsOneWidget);
 
-    await tester.tap(find.text('Refresh mock'));
-    await tester.pump();
+    await tapRefreshMock(tester);
     expect(find.text('Cursor'), findsOneWidget);
     expect(find.text('Claude'), findsNothing);
   });
@@ -136,7 +142,11 @@ void main() {
   testWidgets('all providers off shows empty preview', (tester) async {
     final settings = ProviderSettingsController(
       enabled: {},
-      syncWidget: ({snapshot, index, enabled}) async {},
+      syncWidget: ({
+        required snapshot,
+        required index,
+        required enabled,
+      }) async {},
     );
     await tester.pumpWidget(CodenotchApp(settings: settings));
 
