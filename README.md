@@ -1,3 +1,5 @@
+> **Archived / 중단** — 2026-09-15. Personal AI usage APIs are not available for mobile; project stopped after M0–M1 mock widgets. See issues #11–#14.
+
 # Codenotch Mobile
 
 Flutter home-screen widgets for AI usage (Android App Widget + iOS WidgetKit).
