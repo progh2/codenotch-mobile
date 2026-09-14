@@ -110,17 +110,20 @@ class HomeWidgetPreviewCard extends StatelessWidget {
     return Semantics(
       label:
           'Home widget preview ${snapshot.percentText} ${snapshot.label}',
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: WidgetColors.background,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 22, 20, 22),
-          child: Column(
-            children: [
-              UsageRing(snapshot: snapshot),
-            ],
+      child: Align(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 220),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: WidgetColors.background,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Center(
+                child: UsageRing(snapshot: snapshot, size: 176),
+              ),
+            ),
           ),
         ),
       ),
